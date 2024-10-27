@@ -9,7 +9,7 @@ function Navigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="ChatScreen"
+        initialRouteName="ChatListScreen"
         // screenOptions={homeScreenOptions}
       >
         <Stack.Screen
