@@ -10,10 +10,17 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@tamagui/animations-react-native": "^1.89.17",
+    "@tamagui/babel-plugin": "^1.89.17",
+    "@tamagui/config": "1.89.17",
+    "@tamagui/core": "1.89.17",
     "expo": "~51.0.28",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
-    "react-native": "0.74.5"
+    "react-dom": "18.2.0",
+    "react-native": "0.74.5",
+    "react-native-reanimated": "3.10.1",
+    "tamagui": "1.89.17"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
