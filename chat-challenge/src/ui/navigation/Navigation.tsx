@@ -1,30 +1,35 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { ChatListScreen } from '../organisms/screens/ChatListScreen'
+import { ConversationListScreen } from '../organisms/screens/ConversationListScreen'
 import { ChatScreen } from '../organisms/screens/ChatScreen'
 
-const Stack = createStackNavigator()
+type StackNavigatorScreens = {
+  ConversationListScreen: undefined
+  ChatScreen: undefined
+}
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends StackNavigatorScreens {}
+  }
+}
+
+const Stack = createStackNavigator<StackNavigatorScreens>()
 
 function Navigation() {
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="ChatScreen"
-        // screenOptions={homeScreenOptions}
-      >
+      <Stack.Navigator initialRouteName="ConversationListScreen">
         <Stack.Screen
-          name="ChatListScreen"
-          component={ChatListScreen}
+          name="ConversationListScreen"
+          component={ConversationListScreen}
           options={{ title: 'Your Chats' }}
         />
-        <Stack.Screen
-          name="ChatScreen"
-          component={ChatScreen}
-          // options={{ title: 'Your Chats' }}
-        />
+        <Stack.Screen name="ChatScreen" component={ChatScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
 }
 
+export type { StackNavigatorScreens }
 export { Navigation }
