@@ -22,6 +22,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "dd666fc2-4f1c-4b56-84f4-a12476eb089f"
+      }
+    },
+    "owner": "thiago.dasilva"
   }
 }
