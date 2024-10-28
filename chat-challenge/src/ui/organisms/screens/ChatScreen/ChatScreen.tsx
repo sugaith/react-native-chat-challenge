@@ -17,11 +17,7 @@ function ChatScreen() {
 
   useEffect(() => {
     const fetchInitialMessage = async () => {
-      const aiResponse = await fetchOpenAIResponse(
-        currentConversation.messages.length
-          ? currentConversation.messages
-          : startConversationMessage,
-      )
+      const aiResponse = await fetchOpenAIResponse(startConversationMessage)
 
       const aiMessage: IMessage = {
         _id: Math.random().toString(),
@@ -31,12 +27,13 @@ function ChatScreen() {
       }
 
       messagesRef.current = GiftedChat.append(messagesRef.current, [aiMessage])
-
       setMessages(messagesRef.current)
     }
 
-    fetchInitialMessage()
-  }, [currentConversation.messages])
+    if (!messagesRef.current.length) {
+      fetchInitialMessage()
+    }
+  }, [])
 
   useEffect(
     () => () => {
@@ -54,7 +51,7 @@ function ChatScreen() {
 
     if (newMessages.length > 0) {
       const aiResponse = await fetchOpenAIResponse(
-        messagesRef.current.reverse(),
+        [...messagesRef.current].reverse(),
       )
 
       const aiMessage: IMessage = {

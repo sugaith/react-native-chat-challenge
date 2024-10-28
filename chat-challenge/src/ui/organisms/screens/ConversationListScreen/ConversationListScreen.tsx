@@ -47,17 +47,9 @@ function ConversationListScreen() {
       <FlatList
         data={filteredConversations}
         keyExtractor={(item) => item.id || Math.random().toString()}
-        renderItem={({ item: conversation }) => {
-          const lastMessage = conversation.messages.at(-1)
-
-          const convoProps: ConversationItemProps = {
-            name: lastMessage?.user.name,
-            lastMessage: lastMessage?.text || '',
-            timestamp: lastMessage?.createdAt || new Date(),
-          }
-
-          return <ConversationItem {...convoProps} />
-        }}
+        renderItem={({ item: conversation }) => (
+          <ConversationItem conversation={conversation} />
+        )}
         ItemSeparatorComponent={() => <Spacer size="$2" />}
       />
 

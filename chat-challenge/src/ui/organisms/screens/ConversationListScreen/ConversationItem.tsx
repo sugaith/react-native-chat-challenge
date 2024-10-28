@@ -1,23 +1,23 @@
 import { useNavigation } from '@react-navigation/native'
 import { useCallback } from 'react'
-import { IMessage } from 'react-native-gifted-chat'
+import { Conversation, useConversationStore } from 'src/store/ConversationStore'
 import { Button, Text } from 'tamagui'
 
 type ConversationItemProps = {
-  name: IMessage['user']['name']
-  lastMessage: IMessage['text']
-  timestamp: IMessage['createdAt']
+  conversation: Conversation
 }
 
-const ConversationItem = ({
-  name,
-  lastMessage,
-  timestamp,
-}: ConversationItemProps) => {
+const ConversationItem = ({ conversation }: ConversationItemProps) => {
   const { navigate } = useNavigation()
+  const setCurrentConversation = useConversationStore(
+    (state) => state.setCurrentConversation,
+  )
   const openConversation = useCallback(() => {
+    setCurrentConversation(conversation)
     navigate('ChatScreen')
-  }, [navigate])
+  }, [conversation, navigate, setCurrentConversation])
+
+  const lastMessage = conversation.messages.at(0)
 
   return (
     <Button
@@ -30,17 +30,21 @@ const ConversationItem = ({
       onPress={openConversation}
     >
       <Text fontWeight="bold" color="$text" marginBottom="$1">
-        {name}
+        {lastMessage?.user.name}
       </Text>
-      <Text color="$gray8" marginBottom="$1">
-        {lastMessage}
+      <Text
+        color="$gray8"
+        marginBottom="$1"
+        numberOfLines={1}
+        ellipsizeMode="tail"
+      >
+        {lastMessage?.text.substring(0, 45) + '...'}
       </Text>
       <Text fontSize="$2" color="$gray7">
-        {timestamp.toLocaleString()}
+        {lastMessage?.createdAt.toLocaleString() || new Date().toLocaleString()}
       </Text>
     </Button>
   )
 }
 
-export type { ConversationItemProps }
-export { ConversationItem }
+export { ConversationItem, ConversationItemProps }
