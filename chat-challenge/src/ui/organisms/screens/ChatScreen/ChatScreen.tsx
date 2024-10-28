@@ -1,85 +1,80 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { GiftedChat, IMessage } from 'react-native-gifted-chat'
 import { fetchOpenAIResponse } from 'src/apis/openAi'
+import { startConversationMessage } from 'src/store/constants'
+import { useConversationStore } from 'src/store/ConversationStore'
+import { AGENT_USER, MYSELF_USER } from 'src/utils'
 
 function ChatScreen() {
-  const [messages, setMessages] = useState<IMessage[]>([])
+  const currentConversation = useConversationStore(
+    (state) => state.currentConversation,
+  )
+  const saveConversation = useConversationStore(
+    (state) => state.saveConversation,
+  )
+  const messagesRef = useRef(currentConversation.messages)
+  const [messages, setMessages] = useState(messagesRef.current)
 
   useEffect(() => {
     const fetchInitialMessage = async () => {
-      const initialUserMessages: IMessage[] = [
-        {
-          _id: 1,
-          text: 'Start the conversation',
-          createdAt: new Date(),
-          user: {
-            _id: 1,
-            name: 'Myself',
-          },
-        },
-      ]
-
-      const aiResponse = await fetchOpenAIResponse(initialUserMessages)
+      const aiResponse = await fetchOpenAIResponse(
+        currentConversation.messages.length
+          ? currentConversation.messages
+          : startConversationMessage,
+      )
 
       const aiMessage: IMessage = {
         _id: Math.random().toString(),
         text: aiResponse,
         createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'OpenAI',
-          avatar: 'https://avatar.iran.liara.run/public',
-        },
+        user: AGENT_USER,
       }
 
-      setMessages((previousMessages) =>
-        GiftedChat.append(previousMessages, [aiMessage]),
-      )
+      messagesRef.current = GiftedChat.append(messagesRef.current, [aiMessage])
+
+      setMessages(messagesRef.current)
     }
 
     fetchInitialMessage()
-  }, [])
+  }, [currentConversation.messages])
 
-  const onSend = useCallback(
-    async (newMessages: IMessage[] = []) => {
-      setMessages((previousMessages) =>
-        GiftedChat.append(previousMessages, newMessages),
+  useEffect(
+    () => () => {
+      saveConversation({
+        id: currentConversation.id,
+        messages: messagesRef.current,
+      })
+    },
+    [currentConversation.id, saveConversation],
+  )
+
+  const onSend = useCallback(async (newMessages: IMessage[] = []) => {
+    messagesRef.current = GiftedChat.append(messagesRef.current, newMessages)
+    setMessages(messagesRef.current)
+
+    if (newMessages.length > 0) {
+      const aiResponse = await fetchOpenAIResponse(
+        messagesRef.current.reverse(),
       )
 
-      const updatedMessages = GiftedChat.append(messages, newMessages)
-
-      if (newMessages.length > 0) {
-        const aiResponse = await fetchOpenAIResponse(updatedMessages.reverse())
-
-        const aiMessage: IMessage = {
-          _id: Math.random().toString(),
-          text: aiResponse,
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: 'OpenAI',
-            avatar: 'https://avatar.iran.liara.run/public',
-          },
-        }
-
-        setMessages((previousMessages) =>
-          GiftedChat.append(previousMessages, [aiMessage]),
-        )
+      const aiMessage: IMessage = {
+        _id: Math.random().toString(),
+        text: aiResponse,
+        createdAt: new Date(),
+        user: AGENT_USER,
       }
-    },
-    [messages],
-  )
+
+      messagesRef.current = GiftedChat.append(messagesRef.current, [aiMessage])
+      setMessages(messagesRef.current)
+    }
+  }, [])
 
   return (
     <GiftedChat
       messages={messages}
       renderAvatarOnTop={true}
       onSend={onSend}
-      user={{
-        _id: 1,
-        name: 'Myself',
-        avatar: 'https://avatar.iran.liara.run/public',
-      }}
+      user={MYSELF_USER}
     />
   )
 }
