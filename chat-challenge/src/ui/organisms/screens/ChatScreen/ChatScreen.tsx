@@ -1,10 +1,15 @@
 import { useState, useCallback, useRef } from 'react'
-import { GiftedChat } from 'react-native-gifted-chat'
+import {
+  GiftedChat,
+  IMessage,
+  Message,
+  MessageProps,
+} from 'react-native-gifted-chat'
 import { IMessageBase64 } from 'src/apis/openAi'
 import { useConversationStore } from 'src/store/ConversationStore'
 import { MYSELF_USER } from 'src/utils'
-import { Button } from 'tamagui'
-import { Camera } from '@tamagui/lucide-icons'
+import { Button, View } from 'tamagui'
+import { Camera, HeartPulse, HeartOff } from '@tamagui/lucide-icons'
 import { useNavigation } from '@react-navigation/native'
 import {
   useConversationStartUp,
@@ -12,6 +17,7 @@ import {
   useOnSend,
   useSaveConversationOnExit,
 } from './helpers'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 
 function ChatScreen() {
   const { navigate } = useNavigation()
@@ -46,6 +52,37 @@ function ChatScreen() {
     [navigate],
   )
 
+  const renderMessage = useCallback((props: MessageProps<IMessage>) => {
+    const doubleTap = Gesture.Tap()
+      .numberOfTaps(2)
+      .onStart(() => {
+        console.log('Yay, double tap!')
+      })
+
+    const shouldSupportLikeAction =
+      props.currentMessage.user._id !== MYSELF_USER._id
+
+    return (
+      <GestureDetector gesture={doubleTap}>
+        <View backgroundColor={'$background05'}>
+          <Message
+            {...props}
+            containerStyle={{ left: { flex: 1 }, right: { flex: 1 } }}
+          />
+          {shouldSupportLikeAction ? (
+            <HeartPulse
+              position="absolute"
+              right="$9"
+              bottom="$3"
+              color={'$black025'}
+              fill={'red'}
+            />
+          ) : null}
+        </View>
+      </GestureDetector>
+    )
+  }, [])
+
   return (
     <GiftedChat
       messages={messages}
@@ -53,6 +90,7 @@ function ChatScreen() {
       onSend={onSend}
       user={MYSELF_USER}
       renderActions={renderCameraButton}
+      renderMessage={renderMessage}
     />
   )
 }
