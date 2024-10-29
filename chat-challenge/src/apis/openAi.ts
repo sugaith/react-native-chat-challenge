@@ -4,6 +4,7 @@ import {
   ChatCompletionCreateParamsBase,
 } from 'openai/resources/chat/completions'
 import { IMessage } from 'react-native-gifted-chat'
+import { MYSELF_USER } from 'src/utils'
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_KEY || process.env.EXPO_PUBLIC_OPENAI_KEY,
@@ -12,20 +13,20 @@ const client = new OpenAI({
 
 type IMessageBase64 = IMessage & { base64?: string }
 
+const AI_IMAGE_COMMAND =
+  'Please can you shortly and enthusiastically describe this image?'
+
 async function fetchOpenAIResponse(
   messages: IMessageBase64[],
 ): Promise<string> {
   try {
     const formattedMessages: ChatCompletionCreateParamsBase['messages'] =
       messages.map((message) => {
-        if (message.user._id === 1) {
+        if (message.user._id === MYSELF_USER._id) {
           let content: ChatCompletionContentPart[]
           if (message.image) {
             content = [
-              {
-                type: 'text',
-                text: 'Please describe this image and be enthisuastic and short',
-              },
+              { type: 'text', text: AI_IMAGE_COMMAND },
               {
                 type: 'image_url',
                 image_url: { url: `data:image/jpg;base64,${message.base64}` },
@@ -55,7 +56,7 @@ async function fetchOpenAIResponse(
     return response.choices[0]?.message?.content?.trim() || ''
   } catch (error) {
     console.error('Error fetching AI response:', error)
-    return 'Error: Could not communicate with OpenAI.'
+    return 'Sorry, could not communicate with the api. Are you in a VPN?'
   }
 }
 

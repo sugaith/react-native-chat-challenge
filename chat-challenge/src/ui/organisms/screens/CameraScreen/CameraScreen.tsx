@@ -1,43 +1,15 @@
-import { CameraView, CameraType } from 'expo-camera'
-import { LegacyRef, useCallback, useRef, useState } from 'react'
+import { CameraView } from 'expo-camera'
+import { LegacyRef, useRef } from 'react'
 import { StyleSheet } from 'react-native'
 import { Button, View } from 'tamagui'
 import { Camera, Circle } from '@tamagui/lucide-icons'
-import { useCameraStore } from './CameraStore'
-import { useNavigation } from '@react-navigation/native'
+import { useCameraActions } from '../ChatScreen/helpers'
 
 function CameraScreen() {
-  const { goBack } = useNavigation()
-
   const cameraRef = useRef<CameraView>()
-  const [facing, setFacing] = useState<CameraType>('back')
 
-  const toggleCameraFacing = useCallback(() => {
-    setFacing((current) => (current === 'back' ? 'front' : 'back'))
-  }, [])
-
-  const takePicture = useCallback(async () => {
-    try {
-      if (!cameraRef.current) return
-
-      const image = await cameraRef.current.takePictureAsync({
-        base64: true,
-        quality: 0.6,
-      })
-
-      if (!image) {
-        console.warn(
-          'Warning: Camera did not returned a picture for some reason',
-        )
-        return
-      }
-
-      useCameraStore.getState().setImage(image)
-      goBack()
-    } catch (error) {
-      console.error('Error on takePictureAsync(): ', error)
-    }
-  }, [goBack])
+  const { takePicture, toggleCameraFacing, facing } =
+    useCameraActions(cameraRef)
 
   return (
     <View flex={1} justifyContent="center">
