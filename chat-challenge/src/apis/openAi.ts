@@ -1,5 +1,8 @@
 import OpenAI from 'openai'
-import { ChatCompletionCreateParamsBase } from 'openai/resources/chat/completions'
+import {
+  ChatCompletionContentPart,
+  ChatCompletionCreateParamsBase,
+} from 'openai/resources/chat/completions'
 import { IMessage } from 'react-native-gifted-chat'
 
 const client = new OpenAI({
@@ -7,16 +10,45 @@ const client = new OpenAI({
   timeout: 9000,
 })
 
-async function fetchOpenAIResponse(messages: IMessage[]): Promise<string> {
+type IMessageBase64 = IMessage & { base64?: string }
+
+async function fetchOpenAIResponse(
+  messages: IMessageBase64[],
+): Promise<string> {
   try {
     const formattedMessages: ChatCompletionCreateParamsBase['messages'] =
-      messages.map((message) => ({
-        role: message.user._id === 1 ? 'user' : 'assistant',
-        content: message.text,
-      }))
+      messages.map((message) => {
+        if (message.user._id === 1) {
+          let content: ChatCompletionContentPart[]
+          if (message.image) {
+            content = [
+              {
+                type: 'text',
+                text: 'Please describe this image and be enthisuastic and short',
+              },
+              {
+                type: 'image_url',
+                image_url: { url: `data:image/jpg;base64,${message.base64}` },
+              },
+            ]
+          } else {
+            content = [{ type: 'text', text: message.text }]
+          }
+
+          return {
+            role: 'user',
+            content: content,
+          }
+        }
+
+        return {
+          role: 'assistant',
+          content: message.text,
+        }
+      })
 
     const response = await client.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       messages: formattedMessages,
     })
 
@@ -27,4 +59,5 @@ async function fetchOpenAIResponse(messages: IMessage[]): Promise<string> {
   }
 }
 
+export type { IMessageBase64 }
 export { fetchOpenAIResponse }
