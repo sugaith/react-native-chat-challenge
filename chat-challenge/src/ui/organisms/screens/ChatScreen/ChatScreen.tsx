@@ -9,7 +9,7 @@ import { IMessageBase64 } from 'src/apis/openAi'
 import { useConversationStore } from 'src/store/ConversationStore'
 import { MYSELF_USER } from 'src/utils'
 import { Button, View } from 'tamagui'
-import { Camera, HeartPulse, HeartOff } from '@tamagui/lucide-icons'
+import { Camera, HeartPulse } from '@tamagui/lucide-icons'
 import { useNavigation } from '@react-navigation/native'
 import {
   useConversationStartUp,
@@ -65,10 +65,7 @@ function ChatScreen() {
     return (
       <GestureDetector gesture={doubleTap}>
         <View backgroundColor={'$background05'}>
-          <Message
-            {...props}
-            containerStyle={{ left: { flex: 1 }, right: { flex: 1 } }}
-          />
+          <Message {...props} />
           {shouldSupportLikeAction ? (
             <HeartPulse
               position="absolute"
