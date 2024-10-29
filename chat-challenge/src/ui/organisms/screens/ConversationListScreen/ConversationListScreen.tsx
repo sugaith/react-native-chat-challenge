@@ -1,12 +1,20 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FlatList } from 'react-native'
 import { useConversationStore } from 'src/store/ConversationStore'
 import { YStack, Input, Spacer, Text, Button } from 'tamagui'
-import { ConversationItem, ConversationItemProps } from './ConversationItem'
+import { ConversationItem } from './ConversationItem'
 import { Plus } from '@tamagui/lucide-icons'
 import { useNavigation } from '@react-navigation/native'
+import { useCameraPermissions } from 'expo-camera'
 
 function ConversationListScreen() {
+  const [permission, requestPermission] = useCameraPermissions()
+  useEffect(() => {
+    if (!permission) {
+      requestPermission()
+    }
+  }, [permission, requestPermission])
+
   const { navigate } = useNavigation()
   const conversationList = useConversationStore(
     (state) => state.conversationList,

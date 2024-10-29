@@ -28,6 +28,16 @@
         "projectId": "dd666fc2-4f1c-4b56-84f4-a12476eb089f"
       }
     },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
+    ],
     "owner": "thiago.dasilva"
   }
 }
