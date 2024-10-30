@@ -42,8 +42,6 @@ const useConversationStartUp = (
       fetchInitialMessage()
     }
   }, [messageAppender, shouldStartChat])
-
-  return null
 }
 
 const useNewCameraPictureHandle = (messageAppender: MessageAppenderFunc) => {
@@ -76,11 +74,11 @@ const useNewCameraPictureHandle = (messageAppender: MessageAppenderFunc) => {
       )
     }
   }, [messageAppender, newCameraPicture])
-
-  return null
 }
 
-const useSaveConversationOnExit = (finalMessages: IMessageBase64[]) => {
+const useSaveConversationOnExit = (
+  finalMessages: MutableRefObject<IMessageBase64[]>,
+) => {
   const saveConversation = useConversationStore(
     (state) => state.saveConversation,
   )
@@ -92,13 +90,11 @@ const useSaveConversationOnExit = (finalMessages: IMessageBase64[]) => {
     () => () => {
       saveConversation({
         id: currentConversation.id,
-        messages: finalMessages,
+        messages: finalMessages.current,
       })
     },
     [currentConversation.id, finalMessages, saveConversation],
   )
-
-  return null
 }
 
 const useOnSend = (messageAppender: MessageAppenderFunc) => {

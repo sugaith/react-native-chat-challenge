@@ -1,15 +1,10 @@
 import { useState, useCallback, useRef } from 'react'
-import {
-  GiftedChat,
-  IMessage,
-  Message,
-  MessageProps,
-} from 'react-native-gifted-chat'
+import { GiftedChat, MessageProps } from 'react-native-gifted-chat'
 import { IMessageBase64 } from 'src/apis/openAi'
 import { useConversationStore } from 'src/store/ConversationStore'
 import { MYSELF_USER } from 'src/utils'
-import { Button, View } from 'tamagui'
-import { Camera, HeartPulse } from '@tamagui/lucide-icons'
+import { Button } from 'tamagui'
+import { Camera } from '@tamagui/lucide-icons'
 import { useNavigation } from '@react-navigation/native'
 import {
   useConversationStartUp,
@@ -17,29 +12,42 @@ import {
   useOnSend,
   useSaveConversationOnExit,
 } from './helpers'
-import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import { MessageBubble } from './MessageBubble'
+
+type IMessageLike = IMessageBase64 & { like?: boolean }
 
 function ChatScreen() {
   const { navigate } = useNavigation()
-
   const initialChat = useConversationStore((state) => state.currentConversation)
   const messagesRef = useRef(initialChat.messages)
   const [messages, setMessages] = useState(messagesRef.current)
 
-  const appendMessage = useCallback((newMessages: IMessageBase64[]) => {
-    messagesRef.current = GiftedChat.append(messagesRef.current, newMessages)
-    setMessages(messagesRef.current)
+  const appendMessage = useCallback(
+    (newMessages: IMessageBase64[]): IMessageBase64[] => {
+      messagesRef.current = GiftedChat.append(messagesRef.current, newMessages)
 
-    return [...messagesRef.current]
+      setMessages(messagesRef.current)
+
+      return [...messagesRef.current]
+    },
+    [],
+  )
+
+  const toggleLikeAction = useCallback((messageToLike: IMessageLike) => {
+    messagesRef.current = messagesRef.current.map((message: IMessageLike) =>
+      message._id === messageToLike._id
+        ? { ...message, like: !message.like }
+        : message,
+    )
+
+    setMessages(messagesRef.current)
   }, [])
 
-  useConversationStartUp(!initialChat.messages.length, appendMessage)
-
-  useNewCameraPictureHandle(appendMessage)
-
-  useSaveConversationOnExit(messagesRef.current)
-
   const onSend = useOnSend(appendMessage)
+
+  useConversationStartUp(!initialChat.messages.length, appendMessage)
+  useNewCameraPictureHandle(appendMessage)
+  useSaveConversationOnExit(messagesRef)
 
   const renderCameraButton = useCallback(
     () => (
@@ -52,33 +60,12 @@ function ChatScreen() {
     [navigate],
   )
 
-  const renderMessage = useCallback((props: MessageProps<IMessage>) => {
-    const doubleTap = Gesture.Tap()
-      .numberOfTaps(2)
-      .onStart(() => {
-        console.log('Yay, double tap!')
-      })
-
-    const shouldSupportLikeAction =
-      props.currentMessage.user._id !== MYSELF_USER._id
-
-    return (
-      <GestureDetector gesture={doubleTap}>
-        <View backgroundColor={'$background05'}>
-          <Message {...props} />
-          {shouldSupportLikeAction ? (
-            <HeartPulse
-              position="absolute"
-              right="$9"
-              bottom="$3"
-              color={'$black025'}
-              fill={'red'}
-            />
-          ) : null}
-        </View>
-      </GestureDetector>
-    )
-  }, [])
+  const renderMessage = useCallback(
+    (props: MessageProps<IMessageLike>) => (
+      <MessageBubble {...props} toggleLikeAction={toggleLikeAction} />
+    ),
+    [toggleLikeAction],
+  )
 
   return (
     <GiftedChat
@@ -92,4 +79,5 @@ function ChatScreen() {
   )
 }
 
+export type { IMessageLike }
 export { ChatScreen }
