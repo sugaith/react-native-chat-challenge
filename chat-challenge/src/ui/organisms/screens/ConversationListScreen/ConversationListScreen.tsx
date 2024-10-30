@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { FlatList } from 'react-native'
 import { useConversationStore } from 'src/store/ConversationStore'
-import { YStack, Input, Spacer, Text, Button, View } from 'tamagui'
-import { ConversationItem } from './ConversationItem'
-import { Plus } from '@tamagui/lucide-icons'
-import { useNavigation } from '@react-navigation/native'
+import { YStack, Text, View } from 'tamagui'
 import { useCameraPermissions } from 'expo-camera'
 import { SearchInput } from 'src/ui/atoms'
 import { NewConversationButton } from 'src/ui/atoms/NewButton'
+import { ConversationItem } from 'src/ui/molecules'
 
 function ConversationListScreen() {
   const [permission, requestPermission] = useCameraPermissions()
@@ -47,7 +45,6 @@ function ConversationListScreen() {
             renderItem={({ item: conversation }) => (
               <ConversationItem conversation={conversation} />
             )}
-            ItemSeparatorComponent={() => <Spacer size="$1s" />}
           />
         </>
       )}

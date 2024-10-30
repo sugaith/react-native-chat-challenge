@@ -9,7 +9,7 @@ type SearchInputProp = {
 function SearchInput({ searchQuery, setSearchQuery }: SearchInputProp) {
   return (
     <Input
-      placeholder="Search..."
+      placeholder="Search past chats..."
       value={searchQuery}
       onChangeText={setSearchQuery}
       borderWidth={1}

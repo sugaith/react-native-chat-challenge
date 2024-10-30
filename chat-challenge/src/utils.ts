@@ -8,7 +8,7 @@ const MYSELF_USER: User = {
 
 const AGENT_USER: User = {
   _id: 2,
-  name: 'OpenAI',
+  name: 'Agent',
   avatar: 'https://i.pravatar.cc/300',
 }
 
