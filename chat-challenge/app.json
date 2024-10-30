@@ -13,7 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "io.thiagodasilva.app"
+      "bundleIdentifier": "io.expo.client"
     },
     "android": {
       "adaptiveIcon": {

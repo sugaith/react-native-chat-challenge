@@ -4,6 +4,7 @@ import config from './tamagui.config'
 import { TamaguiProvider } from '@tamagui/core'
 import { useFonts } from 'expo-font'
 import { Navigation } from './src'
+import { View, Text, StyleSheet } from 'react-native'
 
 export default function App() {
   const [loaded] = useFonts({
@@ -12,7 +13,11 @@ export default function App() {
   })
 
   if (!loaded) {
-    return null
+    return (
+      <View style={styles.loadingView}>
+        <Text>Loading..</Text>
+      </View>
+    )
   }
 
   return (
@@ -22,3 +27,7 @@ export default function App() {
     </TamaguiProvider>
   )
 }
+
+const styles = StyleSheet.create({
+  loadingView: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+})
