@@ -1,10 +1,8 @@
 # react-native-chat-challenge
 
-# Video Demo
+## Video Demo
 
-Find the video demo in [./video-demo.mp4](https://github.com/sugaith/react-native-chat-challenge/raw/refs/heads/main/video-demo.mp4)
-
-[![Print](https://github.com/sugaith/react-native-chat-challenge/raw/refs/heads/main/video-demo.mp4](https://github.com/sugaith)
+Click hre to download the video-demo: [./video-demo.mp4](https://github.com/sugaith/react-native-chat-challenge/raw/refs/heads/main/video-demo.mp4)
 
 ## Install / Run
 
