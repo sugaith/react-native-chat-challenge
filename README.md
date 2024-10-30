@@ -117,7 +117,7 @@ However, the integration is loosely coupled, allowing for easy modifications to 
 
 - **EAS**: Problems deploying a build to EAS. It was opening the app with a blank screen after deployment.
 
-- Wanted to implement a light/dark theme switcher, but didn't have enough time.
+- Wanted to implement a light/dark theme switcher and work more on styling, but didn't have enough time.
 
 - Also wanted to implement `mmkv` to save conversations locally with `zustand`, but ran out of time.
 
