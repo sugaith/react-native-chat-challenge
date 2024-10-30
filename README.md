@@ -1,5 +1,11 @@
 # react-native-chat-challenge
 
+# Video Demo
+
+Find the video demo in [./video-demo.mp4](./)
+
+[![Print](video-demo.mp4)](https://github.com/sugaith)
+
 ## Install / Run
 
 - Open `chat-challenge/.env` file and populate the `EXPO_PUBLIC_OPENAI_KEY` with the key provided by email
