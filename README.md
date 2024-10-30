@@ -120,3 +120,7 @@ However, the integration is loosely coupled, allowing for easy modifications to 
 - Wanted to implement a light/dark theme switcher, but didn't have enough time.
 
 - Also wanted to implement `mmkv` to save conversations locally with `zustand`, but ran out of time.
+
+[![Print](1.png?raw=true)](https://github.com/sugaith)
+
+[![Print](2.png?raw=true)](https://github.com/sugaith)
