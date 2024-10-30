@@ -1,8 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { ConversationListScreen } from '../organisms/screens/ConversationListScreen'
-import { ChatScreen } from '../organisms/screens/ChatScreen'
-import { CameraScreen } from '../organisms/screens/CameraScreen'
+import { ConversationListScreen } from '../screens/ConversationListScreen'
+import { ChatScreen } from '../screens/ChatScreen'
+import { CameraScreen } from '../screens/CameraScreen'
 
 type StackNavigatorScreens = {
   ConversationListScreen: undefined
@@ -27,7 +27,11 @@ function Navigation() {
           component={ConversationListScreen}
           options={{ title: 'Your Chats' }}
         />
-        <Stack.Screen name="ChatScreen" component={ChatScreen} />
+        <Stack.Screen
+          name="ChatScreen"
+          component={ChatScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="CameraScreen" component={CameraScreen} />
       </Stack.Navigator>
     </NavigationContainer>

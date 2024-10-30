@@ -13,11 +13,13 @@ import {
   useSaveConversationOnExit,
 } from './helpers'
 import { MessageBubble } from './MessageBubble'
+import { ChatHeader } from 'src/ui/molecules'
 
 type IMessageLike = IMessageBase64 & { like?: boolean }
 
 function ChatScreen() {
   const { navigate } = useNavigation()
+
   const initialChat = useConversationStore((state) => state.currentConversation)
   const messagesRef = useRef(initialChat.messages)
   const [messages, setMessages] = useState(messagesRef.current)
@@ -44,7 +46,6 @@ function ChatScreen() {
   }, [])
 
   const onSend = useOnSend(appendMessage)
-
   useConversationStartUp(!initialChat.messages.length, appendMessage)
   useNewCameraPictureHandle(appendMessage)
   useSaveConversationOnExit(messagesRef)
@@ -68,14 +69,19 @@ function ChatScreen() {
   )
 
   return (
-    <GiftedChat
-      messages={messages}
-      renderAvatarOnTop={true}
-      onSend={onSend}
-      user={MYSELF_USER}
-      renderActions={renderCameraButton}
-      renderMessage={renderMessage}
-    />
+    <>
+      <ChatHeader />
+
+      <GiftedChat
+        messages={messages}
+        renderAvatarOnTop={true}
+        onSend={onSend}
+        user={MYSELF_USER}
+        renderActions={renderCameraButton}
+        keyboardShouldPersistTaps="handled"
+        renderMessage={renderMessage}
+      />
+    </>
   )
 }
 

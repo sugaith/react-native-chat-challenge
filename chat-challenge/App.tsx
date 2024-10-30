@@ -2,8 +2,8 @@ import React from 'react'
 import { StatusBar } from 'expo-status-bar'
 import config from './tamagui.config'
 import { TamaguiProvider } from '@tamagui/core'
-import { Navigation } from 'src/ui/navigation/Navigation'
 import { useFonts } from 'expo-font'
+import { Navigation } from './src'
 
 export default function App() {
   const [loaded] = useFonts({
