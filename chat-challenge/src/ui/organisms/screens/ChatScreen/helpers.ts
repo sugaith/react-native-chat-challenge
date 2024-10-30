@@ -1,14 +1,24 @@
 import { MutableRefObject, useCallback, useEffect, useState } from 'react'
-import { useCameraStore } from '../CameraScreen'
+import { CameraType, CameraView, CameraCapturedPicture } from 'expo-camera'
+import { useNavigation } from '@react-navigation/native'
+import { IMessage } from 'react-native-gifted-chat'
+import { create } from 'zustand'
+
 import { fetchOpenAIResponse, IMessageBase64 } from 'src/apis/openAi'
 import { AGENT_USER, MYSELF_USER } from 'src/utils'
-import { IMessage } from 'react-native-gifted-chat'
 import { startConversationMessage } from 'src/store/constants'
-import { useConversationStore } from 'src/store/ConversationStore'
-import { useNavigation } from '@react-navigation/native'
-import { CameraType, CameraView } from 'expo-camera'
+import { useConversationStore } from 'src/store'
 
 type MessageAppenderFunc = (msgs: IMessageBase64[]) => IMessageBase64[]
+type CameraStore = {
+  image: CameraCapturedPicture | null
+  setImage: (img: CameraCapturedPicture | null) => void
+}
+
+const useCameraStore = create<CameraStore>((set) => ({
+  image: null,
+  setImage: (img) => set({ image: img }),
+}))
 
 const useConversationStartUp = (
   shouldStartChat: boolean,
@@ -32,8 +42,6 @@ const useConversationStartUp = (
       fetchInitialMessage()
     }
   }, [messageAppender, shouldStartChat])
-
-  return null
 }
 
 const useNewCameraPictureHandle = (messageAppender: MessageAppenderFunc) => {
@@ -66,11 +74,11 @@ const useNewCameraPictureHandle = (messageAppender: MessageAppenderFunc) => {
       )
     }
   }, [messageAppender, newCameraPicture])
-
-  return null
 }
 
-const useSaveConversationOnExit = (finalMessages: IMessageBase64[]) => {
+const useSaveConversationOnExit = (
+  finalMessages: MutableRefObject<IMessageBase64[]>,
+) => {
   const saveConversation = useConversationStore(
     (state) => state.saveConversation,
   )
@@ -82,13 +90,11 @@ const useSaveConversationOnExit = (finalMessages: IMessageBase64[]) => {
     () => () => {
       saveConversation({
         id: currentConversation.id,
-        messages: finalMessages,
+        messages: finalMessages.current,
       })
     },
     [currentConversation.id, finalMessages, saveConversation],
   )
-
-  return null
 }
 
 const useOnSend = (messageAppender: MessageAppenderFunc) => {
@@ -157,4 +163,5 @@ export {
   useSaveConversationOnExit,
   useOnSend,
   useCameraActions,
+  useCameraStore,
 }
