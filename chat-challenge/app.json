@@ -12,20 +12,26 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "io.thiagodasilva.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.thiago_da_silva.chatchallenge"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "dd666fc2-4f1c-4b56-84f4-a12476eb089f"
+        "projectId": "60b9cdcc-4802-45c2-aa26-0679e04b97b2"
       }
     },
     "plugins": [
@@ -39,6 +45,6 @@
       ],
       "expo-font"
     ],
-    "owner": "thiago.dasilva"
+    "owner": "thiago_da_silva"
   }
 }
